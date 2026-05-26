@@ -15,7 +15,7 @@ local L = BuffOverlay.L
 
 -- Upvalues
 local _G = _G
---local CopyTable = CopyTable
+local CopyTable = CopyTable
 local GetSpellTexture = GetSpellTexture
 local GetSpellInfo = BuffOverlay.GetSpellInfo
 local UnitIsPlayer = UnitIsPlayer
@@ -48,23 +48,7 @@ local testTextFrame
 local nop = function() end
 
 
-local function CopyTable(src, dest) --=======================================================перепроверить, может быть удалить
-    if type(src) ~= "table" then return src end
-
-    local copy = dest or {}
-
-    for k, v in pairs(src) do
-        if type(v) == "table" then
-            copy[k] = CopyTable(v)
-        else
-            copy[k] = v
-        end
-    end
-
-    return copy
-end
-
--- переделать хелпер убрать недоступное ап гетнумгрупмемберс
+-- изменить GetNumGroupMembers
 local function GetNumGroupMembers()
     if GetNumRaidMembers() > 0 then
         return GetNumRaidMembers()
@@ -307,12 +291,24 @@ function BuffOverlay:AddBar()
     local num = GetFirstUnusedNum()
     local barName = "Bar" .. num
 
-    self.db.profile.bars[barName] = CopyTable(defaultBarSettings)
+    --self.db.profile.bars[barName] = CopyTable(defaultBarSettings)
+	local templateBar
+	local prevNum = num - 1
+	while prevNum > 0 do
+		local prevBarName = "Bar" .. prevNum
+		if self.db.profile.bars[prevBarName] then
+			templateBar = self.db.profile.bars[prevBarName]
+			break
+		end
+		prevNum = prevNum - 1
+	end
 
-    local bar = self.db.profile.bars[barName]
-    bar.name = barName
-    bar.id = barName
-    self:TryAddBarToOptions(bar, barName)
+	self.db.profile.bars[barName] = CopyTable(templateBar or defaultBarSettings)
+
+	local bar = self.db.profile.bars[barName]
+	bar.name = barName
+	bar.id = barName
+	self:TryAddBarToOptions(bar, barName)
 
     for _, v in pairs(self.db.profile.buffs) do
         if v.state[barName] == nil then
@@ -1117,7 +1113,8 @@ local function HideTestFrames()
 end
 
 local combatDropUpdate = CreateFrame("Frame")
-combatDropUpdate:SetScript("OnEvent", function(self)
+	local ERR_AFFECTING_COMBAT = L["Test mode cannot be started during combat."]
+	combatDropUpdate:SetScript("OnEvent", function(self)
     HideTestFrames()
     self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end)
@@ -1805,8 +1802,16 @@ function BuffOverlay:ApplyOverlay(frame, unit, barNameToApply)
                     else
                         overlay:EnableMouse(false)
                     end
-                    overlay:RegisterForClicks()
-]]					
+                    overlay:RegisterForClicks()				
+]]		
+if bar.showTooltip then
+    overlay:EnableMouse(true) -- не надо выключать мышь для отображения подсказок
+    overlay:SetScript("OnMouseDown", nil) -- уберём первую часть клика
+    overlay:SetScript("OnMouseUp", nil) -- уберём вторую часть клика
+else
+    overlay:EnableMouse(false) -- хз зачем оно тут ваще, тут, наверное, лучше регнуть обратно ивенты
+end			
+overlay:RegisterForClicks()
 					overlay:EnableMouse(bar.showTooltip)
 
                     -- Fix for addons that recursively change its children's frame levels
