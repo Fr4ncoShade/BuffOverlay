@@ -50,22 +50,33 @@ local spellTooltip = CreateFrame("GameTooltip", "BuffOverlaySpellTooltip", nil, 
 spellTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 
 local function GetSpellDescription(spellID)
-    if not spellID then
+    if not spellID or type(spellID) ~= "number" then
+        return nil
+    end
+
+    local spellName = GetSpellInfo(spellID)
+
+    if not spellName then
         return nil
     end
 
     spellTooltip:ClearLines()
-    spellTooltip:SetSpellByID(spellID)
 
-    local spellName = GetSpellInfo(spellID)
+    local ok = pcall(spellTooltip.SetSpellByID, spellTooltip, spellID)
+
+    if not ok then
+        return nil
+    end
 
     for i = 2, spellTooltip:NumLines() do
-        local line = _G["BuffOverlaySpellTooltipTextLeft"..i]
+        local line = _G["BuffOverlaySpellTooltipTextLeft" .. i]
 
         if line then
             local text = line:GetText()
 
-            if text and text ~= "" and text ~= spellName then
+            if text
+            and text ~= ""
+            and text ~= spellName then
                 return text
             end
         end
@@ -73,6 +84,7 @@ local function GetSpellDescription(spellID)
 
     return nil
 end
+--===========
 
 local spellDescriptions = setmetatable({}, {
     __index = function(t, spellId)
