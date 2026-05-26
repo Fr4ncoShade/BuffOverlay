@@ -1,0 +1,22 @@
+## Interface: 30300
+## Title: BuffOverlay
+## Notes: Overlays chosen auras on top of raid/party frames.
+## Author: Bianconeri
+## Version: v12.9.6
+## X-Website: https://github.com/clicketz/buff-overlay
+## X-WoWI-ID: 24683
+## X-Wago-ID: RBKpvqNE
+## DefaultState: Enabled
+## SavedVariables: BuffOverlayDB
+
+Pools.lua
+
+Border.xml
+Embeds.xml
+
+Init.lua
+Locales.xml
+Spells\Spells.lua
+AddonCompatibility.lua
+BuffOverlay.lua
+Options.lua
