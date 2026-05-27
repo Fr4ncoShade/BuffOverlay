@@ -134,32 +134,6 @@ local addonFrameInfo = {
             unit = "unit",
         },
     },
-    ["InvenRaidFrames3"] = {
-        {
-            frame = "^InvenRaidFrames3Group%dUnitButton",
-            type = "raid",
-            unit = "unit",
-        },
-        {
-            frame = "^InvenUnitFrames_Party%d",
-            type = "party",
-            unit = "unit",
-        },
-    },
-    ["Lime"] = {
-        {
-            frame = "^LimeGroup",
-            type = "raid",
-            unit = "unit",
-        },
-    },
-    ["Plexus"] = {
-        {
-            frame = "^PlexusLayoutHeader%dUnitButton",
-            type = "raid",
-            unit = "unit",
-        },
-    },
     ["Tukui"] = {
         {
             frame = "TuikuiPartyUnitButton",
@@ -208,18 +182,6 @@ local addonFrameInfo = {
             unit = "unit",
         },
     },
-    ["NDui"] = {
-        {
-            frame = "^oUF_.-Party",
-            type = "party",
-            unit = "unit",
-        },
-        {
-            frame = "^oUF_.-Raid",
-            type = "raid",
-            unit = "unit",
-        },
-    },
     ["oUF"] = {
         {
             frame = "^oUF_.-Party",
@@ -232,38 +194,6 @@ local addonFrameInfo = {
             unit = "unit",
         },
     },
-    ["KkthxUI"] = {
-        {
-            frame = "^oUF_.-Party",
-            type = "party",
-            unit = "unit",
-        },
-        {
-            frame = "^oUF_.-Raid",
-            type = "raid",
-            unit = "unit",
-        },
-    },
-    ["GW2_UI"] = {
-        {
-            frame = "^GwCompactRaidFrame",
-            type = "raid",
-            unit = "unit",
-        },
-    },
-    ["AltzUI"] = {
-        {
-            frame = "^Altz_HealerRaidUnitButton",
-            type = "raid",
-            unit = "unit",
-        },
-        {
-            frame = "^Altz_DpsRaidUnitButton",
-            type = "raid",
-            unit = "unit",
-        },
-    },
-
     ["LunaUnitFrames"] = {
         {
             frame = "^LUFHeaderpartyUnitButton%d+",
@@ -281,7 +211,6 @@ local addonFrameInfo = {
             unit = "unit",
         },
     },
-
 }
 --[[
 local blizzardFrameInfo = {
@@ -512,14 +441,3 @@ local blizzLoader = CreateFrame("Frame")
 	blizzLoader:SetScript("OnEvent", function()
 		RegisterBlizzardFrames()
 end)
---=====================
-
--- HACK: Fix for Blizzard change introduced in Cata classic which breaks LibDialog.
--- TODO: Update LibDialog
---[[
-do
-    if not _G.StaticPopup_DisplayedFrames then
-        _G.StaticPopup_DisplayedFrames = {}
-    end
-end
-]]
