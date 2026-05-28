@@ -83,6 +83,7 @@ local methods = {
 		self:SetStatusText()
 		self:ApplyStatus()
 		self:Show()
+		self:EnableResize(true)
 	end,
 
 	["OnRelease"] = function(self)
@@ -124,6 +125,13 @@ local methods = {
 
 	["Show"] = function(self)
 		self.frame:Show()
+	end,
+	
+	["EnableResize"] = function(self, state)
+		local func = state and "Show" or "Hide"
+		self.sizer_se[func](self.sizer_se)
+		self.sizer_s[func](self.sizer_s)
+		self.sizer_e[func](self.sizer_e)
 	end,
 
 	-- called to set an external table to store status in
@@ -283,6 +291,9 @@ local function Constructor()
 		localstatus = {},
 		titletext   = titletext,
 		statustext  = statustext,
+		sizer_se    = sizer_se,
+		sizer_s     = sizer_s,
+		sizer_e     = sizer_e,
 		content     = content,
 		frame       = frame,
 		type        = Type
