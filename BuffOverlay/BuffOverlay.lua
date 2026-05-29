@@ -226,9 +226,7 @@ function BuffOverlay:OpenOptions()
         local frame = dialog.frame
         if frame then
             local minWidth, minHeight = 635, 635
-            if frame.SetResizeBounds then ---------------???
-                frame:SetResizeBounds(minWidth, minHeight)
-            elseif frame.SetMinResize then
+            if frame.SetMinResize then
                 frame:SetMinResize(minWidth, minHeight)
             end
         end
@@ -1018,7 +1016,7 @@ function BuffOverlay:OnInitialize()
             print(format(L["%s or %s: Toggles the options panel."], self:Colorize("/buffoverlay", "accent"), self:Colorize("/bo", "accent")))
             print(format(L["%s %s: Shows test icons on all visible raid/party frames."], self:Colorize("/bo", "accent"), self:Colorize("test", "value")))
             print(format(L["%s %s: Toggles the minimap icon."], self:Colorize("/bo", "accent"), self:Colorize("minimap", "value")))
-            print(format(L["%s %s: Shows a copyable version string for bug reports."], self:Colorize("/bo", "accent"), self:Colorize("version", "value")))
+            --print(format(L["%s %s: Shows a copyable version string for bug reports."], self:Colorize("/bo", "accent"), self:Colorize("version", "value")))
             print(format(L["%s %s: Resets current profile to default settings. This does not remove any custom auras."], self:Colorize("/bo", "accent"), self:Colorize("reset", "value")))
         elseif msg == "test" then
             self:Test()
@@ -1026,8 +1024,8 @@ function BuffOverlay:OnInitialize()
             self.db:ResetProfile()
         elseif msg == "minimap" then
             self:ToggleMinimapIcon()
-        elseif msg == "version" then
-            self:ShowVersion()
+        --elseif msg == "version" then
+            --self:ShowVersion()
         else
             self:ToggleOptions()
         end
@@ -1804,14 +1802,15 @@ function BuffOverlay:ApplyOverlay(frame, unit, barNameToApply)
                     end
                     overlay:RegisterForClicks()				
 ]]		
+--[[
 if bar.showTooltip then
     overlay:EnableMouse(true) -- не надо выключать мышь для отображения подсказок
     overlay:SetScript("OnMouseDown", nil) -- уберём первую часть клика
     overlay:SetScript("OnMouseUp", nil) -- уберём вторую часть клика
 else
     overlay:EnableMouse(false) -- хз зачем оно тут ваще, тут, наверное, лучше регнуть обратно ивенты
-end			
-overlay:RegisterForClicks()
+end		
+]]
 					overlay:EnableMouse(bar.showTooltip)
 
                     -- Fix for addons that recursively change its children's frame levels
