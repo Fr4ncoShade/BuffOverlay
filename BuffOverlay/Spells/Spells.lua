@@ -114,6 +114,8 @@ BuffOverlay.defaultSpells = {
 
     -- Racials
 	[26297] = { class = "MISC", prio = 40 }, --Berserking
+	[20572] = { class = "MISC", prio = 40 }, --Blood Fury
+	[33702] = { class = "MISC", prio = 40 }, --Blood Fury
     [58984] = { class = "MISC", prio = 70 }, --Shadowmeld
 
     -- Misc
