@@ -62,28 +62,6 @@ local function GetNumGroupMembers()
     return 0
 end
 
---[[ альтернативный хелпер
-local function GetNumGroupMembers()
-    local raid = GetNumRaidMembers()
-
-    if raid > 0 then
-        return raid
-    end
-
-    local party = GetNumPartyMembers()
-
-    if party > 0 then
-        return party + 1
-    end
-
-    return 0
-end
-]]
-
-local function round(num, decimals)
-    local mult = 10 ^ (decimals or 0)
-    return math.floor(num * mult + 0.5) / mult
-end
 --================================
 
 
@@ -1353,22 +1331,17 @@ function BuffOverlay:Test(barName, singleAura)
         end
     end
 
-    if next(testBarNames) == nil and self.test then
-        self.test = false
-        if InCombatLockdown() then
-            combatDropUpdate:RegisterEvent("PLAYER_REGEN_ENABLED")
-            self:Print(L["Exiting test mode. Frame visibility will update out of combat."])
-        else
-            HideTestFrames()
-            -- self:Print("Exiting test mode.")
-        end
-        testTextFrame:Hide()
-        self:RefreshOverlays()
-        return
-    else
-        self.test = true
-    end
-
+	if next(testBarNames) == nil and self.test then
+		self.test = false
+		HideTestFrames()
+		-- self:Print("Exiting test mode.")
+		testTextFrame:Hide()
+		self:RefreshOverlays()
+		return
+	else
+		self.test = true
+	end
+------------
     if not barName then
         if next(testBarNames) ~= nil then
             wipe(testBarNames)
