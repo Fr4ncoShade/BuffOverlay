@@ -1198,21 +1198,16 @@ function BuffOverlay:AddBarToOptions(bar, barName)
 
                             local dialog = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
 
-                            if dialog and IsDifferentDialogBar(barName) then  -------------------------------???
-                                self:CreatePriorityDialog(barName)
+                            if dialog and IsDifferentDialogBar(barName) then
+								self:CreatePriorityDialog(barName)
                             end
 
                             if dialog then ----
-                                if IsDifferentDialogBar(barName) then
-                                    self:CreatePriorityDialog(barName)
-                                end
-
                                 for k, v in pairs(self.db.profile.buffs) do
                                     if not v.parent then
                                         AddToPriorityDialog(tostring(k), not v.state[barName].enabled)
                                     end
                                 end
-
                                 AceRegistry:NotifyChange("BuffOverlayDialog")
                             end
 
@@ -1283,6 +1278,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         desc = L["Shows a list of all enabled auras for this bar in order of priority."],
                         func = function()
                             local dialog = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
+
                             if dialog and not IsDifferentDialogBar(barName) then
                                 AceConfigDialog:Close("BuffOverlayDialog")
                             else
