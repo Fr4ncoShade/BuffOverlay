@@ -103,7 +103,7 @@ local customSpellNames = {
     [228050] = GetSpellInfo(228049),
 }
 
-BuffOverlay.customIcons = { --=================================== check the icons
+BuffOverlay.customIcons = {
     [L["Eating/Drinking"]] = "Interface\\Icons\\INV_Drink_03",
     ["?"] = "Interface\\Icons\\INV_Misc_QuestionMark",
     ["Cogwheel"] = "Interface\\Icons\\INV_Gizmo_02",
@@ -1217,9 +1217,9 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                     },
                     enableAll = {
                         order = 1,
-                        name = "ENABLE_ALL_ADDONS",
+                        name = L["Enable all"],
                         type = "execute",
-                        width = 0.70,
+                        width = 0.75,
                         desc = L["Enable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1244,9 +1244,9 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                     },
                     disableAll = {
                         order = 2,
-                        name = "DISABLE_ALL_ADDONS",
+                        name = L["Disable all"],
                         type = "execute",
-                        width = 0.70,
+                        width = 0.75,
                         desc = L["Disable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1274,7 +1274,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 3,
                         name = L["Aura List"],
                         type = "execute",
-                        width = 0.70,
+                        width = 0.75,
                         desc = L["Shows a list of all enabled auras for this bar in order of priority."],
                         func = function()
                             local dialog = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
