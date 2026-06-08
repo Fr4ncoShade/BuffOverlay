@@ -1839,7 +1839,7 @@ function BuffOverlay:Options()
             },
             globalSettings = {
                 order = 4,
-                name = "BASE_SETTINGS", ---================locale
+				name = L["Global Settings"],
                 type = "group",
                 args = {
                     welcomeMessage = {
