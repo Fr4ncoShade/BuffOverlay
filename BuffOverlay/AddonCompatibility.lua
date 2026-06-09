@@ -94,11 +94,12 @@ local addonFrameInfo = {
             unit = "unit",
         },
     },
-    ["Cell"] = {
+    --[[
+	["Cell_Wrath"] = {
         {
             frame = "^CellRaidFrameHeader%d+UnitButton%d+$",
             type = "raid",
-            unit = "unitid",
+            unit = "raid",
         },
         {
             frame = "^CellPartyFrameHeaderUnitButton%d+$",
@@ -127,9 +128,10 @@ local addonFrameInfo = {
             unit = "unitid",
         },
     },
-    ["Aptechka"] = {
+	]]
+    ["Injector"] = {
         {
-            frame = "^NugRaid%d+UnitButton%d+",
+			frame = "^NR%d+UnitButton%d+",
             type = "raid",
             unit = "unit",
         },
