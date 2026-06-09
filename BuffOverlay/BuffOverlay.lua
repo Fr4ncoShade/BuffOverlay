@@ -322,7 +322,7 @@ local function round(num, numDecimalPlaces)
     local mult = 10 ^ (numDecimalPlaces or 0)
     return math_floor(num * mult + 0.5) / mult
 end
-
+--[[
 local function InsertTestBuff(spellId)
     local spellName = GetSpellInfo(spellId)
     local tex = spellName and GetSpellTexture(spellName)
@@ -332,7 +332,17 @@ local function InsertTestBuff(spellId)
         rawset(testBuffIds, spellId, true)
     end
 end
+]]
+-------------
+local function InsertTestBuff(spellId)
+    local _, _, tex = GetSpellInfo(spellId)
 
+    if tex and not testBuffIds[spellId] then
+        rawset(testBuffs, #testBuffs + 1, { spellId, tex })
+        rawset(testBuffIds, spellId, true)
+    end
+end
+------------
 local function UnitAuraTest(unit, index, filter)
     if testSingleAura then
         local icon = BuffOverlay.customIcons[testSingleAura] or select(3, GetSpellInfo(testSingleAura)) or BuffOverlay.customIcons["?"]
@@ -1518,7 +1528,7 @@ local function UpdateBorder(overlay)
     end
 
     local border = overlay.border
-    local size = (bar.iconBorderSize or 1) - 1
+	local size = ((bar.iconBorderSize or 1) - 1) * 0.5
     local borderColor = bar.iconBorderColor or {
         r = 1,
         g = 1,
@@ -1767,23 +1777,7 @@ function BuffOverlay:ApplyOverlay(frame, unit, barNameToApply)
                     if bar.group then ----------------------------------- ???
                         bar.group:ReSkin(overlay)
                     end
---[[
-                    if bar.showTooltip then
-                        overlay:SetMouseClickEnabled(false)
-                    else
-                        overlay:EnableMouse(false)
-                    end
-                    overlay:RegisterForClicks()				
-]]		
---[[
-if bar.showTooltip then
-    overlay:EnableMouse(true) -- не надо выключать мышь для отображения подсказок
-    overlay:SetScript("OnMouseDown", nil) -- уберём первую часть клика
-    overlay:SetScript("OnMouseUp", nil) -- уберём вторую часть клика
-else
-    overlay:EnableMouse(false) -- хз зачем оно тут ваще, тут, наверное, лучше регнуть обратно ивенты
-end		
-]]
+
 					overlay:EnableMouse(bar.showTooltip)
 
                     -- Fix for addons that recursively change its children's frame levels
