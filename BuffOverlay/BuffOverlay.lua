@@ -1280,13 +1280,8 @@ function BuffOverlay:Test(barName, singleAura)
         end
 
         testTextFrame:Hide()
-
-		if GetNumGroupMembers() == 0 then
-			self:Print(L["Test mode requires a party or raid group to display unit frames."])
-		end
-        -- self:Print("Test mode activated.")
         testTextFrame:ClearAllPoints()
---
+
 		local anchor = GetTestAnchor()
 
 		-- Fallback
@@ -1351,7 +1346,7 @@ function BuffOverlay:Test(barName, singleAura)
 	else
 		self.test = true
 	end
-------------
+
     if not barName then
         if next(testBarNames) ~= nil then
             wipe(testBarNames)
