@@ -2,13 +2,7 @@
     <Script file="BorderMixin.lua" />
 
     <Frame name="BuffOverlayBorderTemplate" ignoreParentScale="true" setAllPoints="true" useParentLevel="false" virtual="true">
-	
-		<Scripts>
-			<OnLoad>
-				BuffOverlayBorderTemplateMixin.OnLoad(self)
-			</OnLoad>
-		</Scripts>
-	
+		
         <Layers>
             <Layer level="BACKGROUND" textureSubLevel="-8">
                 <!-- Left -->
