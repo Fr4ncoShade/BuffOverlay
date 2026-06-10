@@ -1,7 +1,7 @@
 BuffOverlayBorderTemplateMixin = {}
 
 function BuffOverlayBorderTemplateMixin:OnLoad()
-    BuffOverlayBorderTemplateMixin.UpdateSizes(self)
+	self:UpdateSizes()
 end
 
 function BuffOverlayBorderTemplateMixin:SetVertexColor(r, g, b, a)
@@ -12,7 +12,7 @@ end
 
 function BuffOverlayBorderTemplateMixin:SetBorderSizes(
     borderSize,
-    upwardExtendHeightPixels,
+    upwardExtendHeightPixels
 )
     self.borderSize = borderSize
     self.upwardExtendHeightPixels = upwardExtendHeightPixels
@@ -70,11 +70,9 @@ function BuffOverlayBorderTemplateMixin:UpdateSizes()
     self.Bottom:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, 0)
 
     -- Top
-    if self.Top then
-        self.Top:SetHeight(borderSize)
+	self.Top:SetHeight(borderSize)
 
-        self.Top:ClearAllPoints()
-        self.Top:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 0)
-        self.Top:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 0)
-    end
+	self.Top:ClearAllPoints()
+	self.Top:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 0)
+	self.Top:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 0)
 end
