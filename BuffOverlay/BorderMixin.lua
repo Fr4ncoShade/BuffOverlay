@@ -1,10 +1,5 @@
 BuffOverlayBorderTemplateMixin = {}
 
---[[
-function BuffOverlayBorderTemplateMixin:OnLoad()
-    self:UpdateSizes()
-end
-]]
 function BuffOverlayBorderTemplateMixin:OnLoad()
     BuffOverlayBorderTemplateMixin.UpdateSizes(self)
 end
@@ -17,22 +12,15 @@ end
 
 function BuffOverlayBorderTemplateMixin:SetBorderSizes(
     borderSize,
-    borderSizeMinPixels,  -----------------???
     upwardExtendHeightPixels,
-    upwardExtendHeightMinPixels --------------???
 )
     self.borderSize = borderSize
-    self.borderSizeMinPixels = borderSizeMinPixels --------------???
     self.upwardExtendHeightPixels = upwardExtendHeightPixels
-    self.upwardExtendHeightMinPixels = upwardExtendHeightMinPixels ----------------???
 end
 
 function BuffOverlayBorderTemplateMixin:UpdateSizes()
     local borderSize = self.borderSize or 1
-    local minPixels = self.borderSizeMinPixels or 2 -------------------???
-
     local upwardExtendHeightPixels = self.upwardExtendHeightPixels or borderSize
-    local upwardExtendHeightMinPixels = self.upwardExtendHeightMinPixels or minPixels -------------------------???
 
     -- Left
     self.Left:SetWidth(borderSize)
