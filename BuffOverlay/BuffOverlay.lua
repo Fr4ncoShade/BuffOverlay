@@ -198,18 +198,22 @@ local ldbData = {
 local broker = LDB:NewDataObject("BuffOverlay", ldbData)
 
 function BuffOverlay:OpenOptions()
-    AceConfigDialog:Open("BuffOverlay")
-    local dialog = AceConfigDialog.OpenFrames["BuffOverlay"]
-    if dialog then
+	AceConfigDialog:Open("BuffOverlay")
+	local dialog = AceConfigDialog.OpenFrames["BuffOverlay"]
+	if dialog then
 		dialog:EnableResize(true)
-        local frame = dialog.frame
-        if frame then
-            local minWidth, minHeight = 635, 635
-            if frame.SetMinResize then
-                frame:SetMinResize(minWidth, minHeight)
-            end
-        end
-    end
+		local frame = dialog.frame
+		if frame and not frame.closeHooked then
+			frame:HookScript("OnHide", function()
+				AceConfigDialog:Close("BuffOverlayDialog")
+			end)
+			frame.closeHooked = true
+		end
+		local minWidth, minHeight = 635, 635
+		if frame and frame.SetMinResize then
+			frame:SetMinResize(minWidth, minHeight)
+		end
+	end
 end
 
 function BuffOverlay:ToggleOptions()
