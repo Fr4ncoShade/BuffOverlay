@@ -8,7 +8,7 @@ local LDBIcon = LibStub("LibDBIcon-1.0")
 local version = GetAddOnMetadata("BuffOverlay", "Version")
 local Masque = LibStub("Masque", true)
 
-local LATEST_DB_VERSION = 1.0
+local LATEST_DB_VERSION = 1
 
 -- Localization Table
 local L = BuffOverlay.L
@@ -171,7 +171,8 @@ local ldbData = {
     icon = "Interface\\AddOns\\BuffOverlay\\Media\\Textures\\logo",
 
 	OnTooltipShow = function(tooltip)
-		tooltip:AddDoubleLine(BuffOverlay:Colorize("BuffOverlay", "main"), BuffOverlay:Colorize(version, "accent"))
+		--tooltip:AddDoubleLine(BuffOverlay:Colorize("BuffOverlay", "main"), BuffOverlay:Colorize(version, "accent"))
+		tooltip:AddLine(BuffOverlay:Colorize("BuffOverlay", "main"))
 		tooltip:AddLine(format(L["%s to toggle options window."], BuffOverlay:Colorize(L["Left Click"], "accent")), 1, 1, 1, false)
 		tooltip:AddLine(format(L["%s to toggle test icons."], BuffOverlay:Colorize(L["Right Click"], "accent")), 1, 1, 1, false)
 		tooltip:AddLine(format(L["%s %s to toggle the minimap icon."], BuffOverlay:Colorize(L["SHIFT +"], "accent"), BuffOverlay:Colorize(L["Right Click"], "accent")), 1, 1, 1, false)
@@ -726,7 +727,8 @@ function BuffOverlay:CreateBuffTable()
     -- and a new defaultSpells table needs to be created.
     if not next(self.defaultSpells) then
         if not self.printOnce then
-            self:Print(L["No default spells found. If this is a new game version, this is normal. Otherwise, please report this to the author."])
+            --self:Print(L["No default spells found. Please check the spell data or report this issue."])
+			self:Print("No default spells found. Please check the spell data or report this issue.")
             self.printOnce = true
         end
 
@@ -901,20 +903,16 @@ local function ValidateSpellIds()
 end
 
 local function ValidateDatabase()
-    -- Clean up old DB entries
-    local reset = false
-    for _, content in pairs(BuffOverlay.db.profiles) do
-        for attr in pairs(defaultBarSettings) do
-            if content[attr] ~= nil then
-                BuffOverlay:Print(format(L["There has been a major update and unfortunately your profiles need to be reset. Upside though, you can now add BuffOverlay aura bars in multiple locations on your frames! Check it out by typing %s in chat."], BuffOverlay:Colorize("/bo", "accent")))
-                BuffOverlay.db:ResetDB("Default")
-                reset = true
-                break
-            end
-        end
-        if reset then break end
-    end
-
+    -- Future database migrations go here
+	--[[
+	local dbVersion = BuffOverlay.db.global.dbVer or 0
+	
+	if dbVersion < 2 then
+		Perform migration logic here
+		Optional: notify user if behavior/data changed
+		BuffOverlay:Print(L["<MIGRATION_MESSAGE_KEY>"])
+	end
+	]]
     BuffOverlay.db.global.dbVer = LATEST_DB_VERSION
 end
 
@@ -1011,6 +1009,7 @@ function BuffOverlay:OnInitialize()
         elseif msg == "reset" or msg == "default" then
             self.db:ResetProfile()
         elseif msg == "minimap" then
+			--print("ToggleMinimapIcon")
             self:ToggleMinimapIcon()
         --elseif msg == "version" then
             --self:ShowVersion()
