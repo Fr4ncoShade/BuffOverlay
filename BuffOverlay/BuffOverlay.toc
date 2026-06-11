@@ -1,11 +1,9 @@
 ## Interface: 30300
 ## Title: BuffOverlay
 ## Notes: Overlays chosen auras on top of raid/party frames.
-## Author: Bianconeri
-## Version: v12.9.6
-## X-Website: https://github.com/clicketz/buff-overlay
-## X-WoWI-ID: 24683
-## X-Wago-ID: RBKpvqNE
+## Author: Bianconeri, clicket
+## Version: 1.0.0 WOTLK
+## X-Website: https://github.com/Fr4ncoShade/BuffOverlay
 ## DefaultState: Enabled
 ## SavedVariables: BuffOverlayDB
 

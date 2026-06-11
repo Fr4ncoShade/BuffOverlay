@@ -10,10 +10,7 @@ local version = GetAddOnMetadata("BuffOverlay", "Version")
 local L = BuffOverlay.L
 
 local GetSpellInfo = BuffOverlay.GetSpellInfo
---local GetSpellDescription = GetSpellDescription
---============
-
---============
+local GetSpellDescription = GetSpellDescription
 local SetCVar = SetCVar
 local InCombatLockdown = InCombatLockdown
 local CopyTable = CopyTable
@@ -98,7 +95,6 @@ local spellDescriptions = setmetatable({}, {
 })
 --==============
 
-
 local customSpellNames = {
     [228050] = GetSpellInfo(228049),
 }
@@ -115,7 +111,7 @@ BuffOverlay.ignoreParentIcons = {
 
 local customIcons = BuffOverlay.customIcons
 
-local classIcons = { -- check the icons
+local classIcons = {
     ["DEATHKNIGHT"] = "Interface\\Icons\\Spell_Deathknight_ClassIcon",
     ["DRUID"] = "Interface\\Icons\\INV_Misc_MonsterClaw_04",
     ["HUNTER"] = "Interface\\Icons\\INV_Weapon_Bow_07",
