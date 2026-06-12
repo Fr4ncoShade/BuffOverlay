@@ -1510,8 +1510,13 @@ local function UpdateBorder(overlay)
 
         ApplyMixin(border, BuffOverlayBorderTemplateMixin)
 
-        -- Ensure textures table exists
-        border.Textures = border.Textures or {}
+        border.Textures = {
+            border.Left,
+            border.Right,
+            border.Top,
+            border.Bottom,
+        }
+
         border:SetFrameLevel(overlay:GetFrameLevel() + 5)
 
         -- Prevent recursive frame level modifications
@@ -1539,23 +1544,11 @@ local function UpdateBorder(overlay)
     local pixelFactor = GetPixelFactor and GetPixelFactor() or 1
     local pixelSize = (pixelFactor / 2) + (pixelFactor * size)
 
-    -- Safe mixin method calls
     if border.SetBorderSizes then
         border:SetBorderSizes(
             pixelSize,
-            pixelSize,
-            pixelSize,
             pixelSize
         )
-    end
-
-    if border.Left then
-        border.Textures = {
-            border.Left,
-            border.Right,
-            border.Top,
-            border.Bottom,
-        }
     end
 
     if border.SetVertexColor then
