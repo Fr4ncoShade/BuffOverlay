@@ -1526,7 +1526,8 @@ local function UpdateBorder(overlay)
     end
 
     local border = overlay.border
-	local size = ((bar.iconBorderSize or 1) - 1) * 0.5
+    local size = ((bar.iconBorderSize or 1) - 1) * 0.5
+
     local borderColor = bar.iconBorderColor or {
         r = 1,
         g = 1,
@@ -1547,7 +1548,16 @@ local function UpdateBorder(overlay)
             pixelSize
         )
     end
---[[
+
+    if border.Left then
+        border.Textures = {
+            border.Left,
+            border.Right,
+            border.Top,
+            border.Bottom,
+        }
+    end
+
     if border.SetVertexColor then
         border:SetVertexColor(
             borderColor.r,
@@ -1556,27 +1566,7 @@ local function UpdateBorder(overlay)
             borderColor.a
         )
     end
-]]
-	if border.Left then
-		border.Textures = {
-			border.Left,
-			border.Right,
-			border.Top,
-			border.Bottom,
-		}
-	end
 
-	if border.Textures then
-		for _, tex in ipairs(border.Textures) do
-			tex:SetVertexColor(
-				borderColor.r,
-				borderColor.g,
-				borderColor.b,
-				borderColor.a
-			)
-		end
-	end
-	
     if border.UpdateSizes then
         border:UpdateSizes()
     end
