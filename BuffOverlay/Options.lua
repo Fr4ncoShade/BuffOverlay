@@ -281,7 +281,7 @@ local function AddToPriorityDialog(spellIdStr, remove)
         }
     end
 end
-
+--
 local function GetSpells(class, barName)
     local spells = {}
     local optionsWidth = 0.975
@@ -442,76 +442,118 @@ local function GetSpells(class, barName)
                                 BuffOverlay:RefreshOverlays()
                             end,
                         },
-                        additionalSettings = {
-                            name = " ",
-                            type = "group",
-                            inline = true,
-                            order = 4,
-                            hidden = function()
-                                local key = k .. barName
-                                return BuffOverlay[key] == nil and true or not BuffOverlay[key]
-                            end,
-                            args = {
-                                header = {
-                                    name = BuffOverlay:GetIconString(icon, 25) or "",
-                                    type = "header",
-                                    order = 0,
-                                },
-                                glowType = {
-                                    name = L["Glow Type"],
-                                    type = "select",
-                                    order = 1,
-                                    --width = 0.75,
-									width = "full",
-                                    values = {
-                                        ["blizz"] = L["Action Button"],
-                                        ["pixel"] = L["Pixel"],
-                                    },
+						additionalSettings = {
+							name = " ",
+							type = "group",
+							inline = true,
+							order = 4,
+							hidden = function()
+								local key = k .. barName
+								return BuffOverlay[key] == nil and true or not BuffOverlay[key]
+							end,
+							args = {
+								header = {
+									name = BuffOverlay:GetIconString(icon, 25) or "",
+									type = "header",
+									order = 0,
+								},
+								glowType = {
+									name = L["Glow Type"],
+									type = "select",
+									order = 1,
+									width = 0.85,
+									--width = 1.7,
+									--width = "full",
+									values = {
+										["blizz"] = L["Action Button"],
+										["pixel"] = L["Pixel"],
+									},
 									
-                                    get = function()
-                                        return BuffOverlay.db.profile.buffs[k].state[barName].glow.type
-                                    end,
-                                    set = function(_, value)
-                                        BuffOverlay.db.profile.buffs[k].state[barName].glow.type = value
-                                        if BuffOverlay.db.profile.buffs[k].UpdateChildren then
-                                            BuffOverlay.db.profile.buffs[k]:UpdateChildren()
-                                        end
-                                        BuffOverlay:RefreshOverlays(true, barName)
-                                    end,
-                                },
-                                space = {
-                                    name = " ",
-                                    type = "description",
-                                    order = 2,
-                                    width = 0.95,
-                                    hidden = function()
-                                        return optionsDisabled[k]
-                                    end,
-                                },
-                                space2 = {
-                                    name = " ",
-                                    type = "description",
-                                    order = 2,
-                                    --width = 1,
+									get = function()
+										return BuffOverlay.db.profile.buffs[k].state[barName].glow.type
+									end,
+									set = function(_, value)
+										BuffOverlay.db.profile.buffs[k].state[barName].glow.type = value
+										if BuffOverlay.db.profile.buffs[k].UpdateChildren then
+											BuffOverlay.db.profile.buffs[k]:UpdateChildren()
+										end
+										BuffOverlay:RefreshOverlays(true, barName)
+									end,
+								},
+								customColor = {
+									name = L["Custom Glow Color"],
+									desc = L["Toggle whether or not to use a custom color for glow."],
+									type = "toggle",
+									order = 2,
+									width = 0.85,
+									get = function()
+										return BuffOverlay.db.profile.buffs[k].state[barName].glow.customColor
+									end,
+									set = function(_, value)
+										BuffOverlay.db.profile.buffs[k].state[barName].glow.customColor = value
+										if BuffOverlay.db.profile.buffs[k].UpdateChildren then
+											BuffOverlay.db.profile.buffs[k]:UpdateChildren()
+										end
+										BuffOverlay:RefreshOverlays(true, barName)
+									end,
+								},							
+								space1 = {
+									name = " ",
+									type = "description",
+									order = 2.5,
 									width = "full",
-                                    hidden = function()
-                                        return not optionsDisabled[k]
-                                    end,
-                                },
-                                editGlobalSettings = {
-                                    name = L["Edit Global Settings"],
-                                    type = "execute",
-                                    desc = format(L["Add %s to the custom spell list, opening up global settings to edit for this spell."], formattedName),
-                                    order = 3,
-                                    width = 0.95,
-                                    hidden = function()
-                                        return optionsDisabled[k]
-                                    end,
-                                    func = function()
-                                        BuffOverlay:AddToCustom(k)
+								},
+								testAura = {
+									name = L["Test Aura"],
+									type = "execute",
+									desc = format(L["Show a test overlay for %s"], formattedName),
+									order = 3,
+									width = 0.85,
+									func = function()
+										if BuffOverlay.test then
+											if BuffOverlay:GetSingleTestAura() ~= k then
+												BuffOverlay:Test()
+											end
+										end
+										BuffOverlay:Test(barName, k)
+									end,
+								},
+								applyToAll = {
+									name = L["Apply to All"],
+									type = "execute",
+									desc = format(L["Apply %s's custom settings (glow, glow color, glow type, own only, etc) to all auras in %s.%sThis does not include any global settings (prio, class, etc)."], formattedName, BuffOverlay:Colorize(BuffOverlay.db.profile.bars[barName].name, "accent"), "\n\n"),
+									order = 4,
+									width = 0.85,
+									func = function()
+										local current = BuffOverlay.db.profile.buffs[k].state[barName]
+										for _, spell in pairs(BuffOverlay.db.profile.buffs) do
+											for key, val in pairs(spell.state[barName]) do
+												if key ~= "enabled" then
+													if type(val) == "table" then
+														spell.state[barName][key] = CopyTable(current[key])
+													else
+														spell.state[barName][key] = current[key]
+													end
+												end
+											end
+										end
+										BuffOverlay:RefreshOverlays(true, barName)
+									end,
+								},
+								editGlobalSettings = {
+									name = L["Edit Global Settings"],
+									type = "execute",
+									desc = format(L["Add %s to the custom spell list, opening up global settings to edit for this spell."], formattedName),
+									order = 5,
+									width = 1.7,
+									hidden = function()
+										return optionsDisabled[k]
+									end,
+									func = function()
+										BuffOverlay:AddToCustom(k)
 
-                                        local dialog = AceConfigDialog.OpenFrames["BuffOverlay"]
-								
+										local dialog = AceConfigDialog.OpenFrames["BuffOverlay"]
+
 									if dialog and dialog.children then
 										for cKey, child in pairs(dialog.children) do
 											if child.tabs then
@@ -534,7 +576,6 @@ local function GetSpells(class, barName)
 																end
 															end
 														end)
-
 														return
 													end
 												end
@@ -542,77 +583,22 @@ local function GetSpells(class, barName)
 										end
 									end
 								end,
-                                },
-                                testAura = {
-                                    name = L["Test Aura"],
-                                    type = "execute",
-                                    desc = format(L["Show a test overlay for %s"], formattedName),
-                                    order = 4,
-                                    --width = 0.75,
+								},
+								space2 = {
+									name = " ",
+									type = "description",
+									order = 6,
 									width = "full",
-                                    func = function()
-                                        if BuffOverlay.test then
-                                            if BuffOverlay:GetSingleTestAura() ~= k then
-                                                BuffOverlay:Test()
-                                            end
-                                        end
-                                        BuffOverlay:Test(barName, k)
-                                    end,
-                                },
-                                space3 = {
-                                    name = " ",
-                                    type = "description",
-                                    order = 5,
-                                    width = 0.05,
-                                },
-                                applyToAll = {
-                                    name = L["Apply to All"],
-                                    type = "execute",
-                                    desc = format(L["Apply %s's custom settings (glow, glow color, glow type, own only, etc) to all auras in %s.%sThis does not include any global settings (prio, class, etc)."], formattedName, BuffOverlay:Colorize(BuffOverlay.db.profile.bars[barName].name, "accent"), "\n\n"),
-                                    order = 6,
-                                    width = 0.95,
-                                    func = function()
-                                        local current = BuffOverlay.db.profile.buffs[k].state[barName]
-                                        for _, spell in pairs(BuffOverlay.db.profile.buffs) do
-                                            for key, val in pairs(spell.state[barName]) do
-                                                if key ~= "enabled" then
-                                                    if type(val) == "table" then
-                                                        spell.state[barName][key] = CopyTable(current[key])
-                                                    else
-                                                        spell.state[barName][key] = current[key]
-                                                    end
-                                                end
-                                            end
-                                        end
-                                        BuffOverlay:RefreshOverlays(true, barName)
-                                    end,
-                                },
-                                customColor = {
-                                    name = L["Custom Glow Color"],
-                                    desc = L["Toggle whether or not to use a custom color for glow."],
-                                    type = "toggle",
-                                    order = 7,
-                                    --width = 0.75,
-									width = "full",
-                                    get = function()
-                                        return BuffOverlay.db.profile.buffs[k].state[barName].glow.customColor
-                                    end,
-                                    set = function(_, value)
-                                        BuffOverlay.db.profile.buffs[k].state[barName].glow.customColor = value
-                                        if BuffOverlay.db.profile.buffs[k].UpdateChildren then
-                                            BuffOverlay.db.profile.buffs[k]:UpdateChildren()
-                                        end
-                                        BuffOverlay:RefreshOverlays(true, barName)
-                                    end,
-                                },
-                            },
-                        },
-                    },
-                }
-            end
-        end
-    end
-    return spells
+									
+								},
+							},
+						},
+					},
+				}
+			end
+		end
+	end
+	return spells
 end
 
 function BuffOverlay:CreatePriorityDialog(barName)
@@ -724,8 +710,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                 name = L["Set Bar Name"],
                 type = "input",
                 order = 0,
-                --width = 1,
-				width = "full",
+                width = 1.5,
                 set = function(info, val)
                     bar[info[#info]] = val
                     self.options.args.bars.args[barName].name = val
@@ -743,12 +728,21 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                     self:UpdateSpellOptionsTable()
                 end,
             },
+--===============
+--[[
+spacer = {
+	order = 0.5,
+	type = "description",
+	name = "",
+	width = "full",
+},
+]]
+--===================
             delete = {
                 name = L["Delete Bar"],
                 type = "execute",
                 order = 1,
-                --width = 0.75,
-				width = "full",
+				width = 0.76,
                 func = function()
                     local text = format(L["Are you sure you want to delete this bar?%s%s%s"], "\n\n", BuffOverlay:Colorize(bar.name, "main"), "\n\n")
                     deleteBarDelegate.text = text
@@ -761,8 +755,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                 desc = L["Show test overlays for this bar."],
                 type = "execute",
                 order = 2,
-                --width = 0.75,
-				width = "full",
+				width = 0.76,
                 func = function()
                     if self.test then
                         if self:GetSingleTestAura() ~= nil then
@@ -787,8 +780,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         desc = L["This copies settings from 'Settings', 'Anchoring', and 'Visibility' tabs."],
                         type = "select",
                         order = 0,
-                        --width = 1,
-						width = "full",
+                        width = 3,
                         values = function()
                             local values = {}
                             for k, v in pairs(self.db.profile.bars) do
@@ -821,8 +813,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 1,
                         name = L["Icon Count"],
                         type = "range",
-                        --width = 1,
-						width = "full",
+                        width = 1.5,
                         desc = L["Number of icons you want to display (per frame)."],
                         min = 1,
                         max = 40,
@@ -833,8 +824,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 2,
                         name = L["Icon Alpha"],
                         type = "range",
-                        --width = 1,
-						width = "full",
+                        width = 1.5,
                         desc = L["Icon transparency."],
                         min = 0,
                         max = 1,
@@ -844,8 +834,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 3,
                         name = L["Icon Scale"],
                         type = "range",
-                        --width = 1,
-						width = "full",
+                        width = 1.5,
                         desc = L["Scale the size of the icon. Base icon size is proportionate to its parent frame."],
                         min = 0.01,
                         max = 99,
@@ -853,11 +842,10 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         step = 0.01,
                     },
                     stackCountScale = {
-                        order = 3.5,
+                        order = 4,
                         name = L["Stack Count Scale"],
                         type = "range",
-                        --width = 1,
-						width = "full",
+                        width = 1.5,
                         desc = L["Scale the icon's stack count text size."],
                         min = 0.01,
                         max = 10,
@@ -869,30 +857,37 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 5,
                         name = L["Icon Spacing"],
                         type = "range",
-                        --width = 1,
-						width = "full",
+                        width = 1.5,
                         desc = L["Spacing between icons. Spacing is scaled based on icon size for uniformity across different icon sizes."],
                         min = 0,
                         max = 200,
                         softMax = 20,
                         step = 1,
                     },
+					space = {
+						name = " ",
+						type = "description",
+						order = 5.5,
+						width = "full",
+						--hidden = HasLessThanTwoBars,
+					},				
                     iconBorder = {
                         order = 6,
                         name = L["Icon Border"],
                         type = "toggle",
-                        --width = 0.75,
-						width = "full",
+                        width = 0.75,
+						--[[
                         desc = L["Adds a pixel border around the icon. This will also zoom the icon in slightly to remove any default borders that may be present."] ..
                             "\n\n" ..
                             L["(Note: This will be automatically disabled if Masque is enabled for this bar.)"],
+						]]
+						desc = L["Adds a pixel border around the icon. This will also zoom the icon in slightly to remove any default borders that may be present."],
                     },
                     iconBorderColor = {
                         order = 7,
                         name = L["Icon Border Color"],
                         type = "color",
-                        --width = 0.75,
-						width = "full",
+                        width = 0.75,
                         desc = L["Change the icon border color."],
                         hasAlpha = true,
                         disabled = function() return not bar.iconBorder end,
@@ -978,8 +973,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         name = L["Icon Anchor"],
                         type = "select",
                         style = "dropdown",
-                        --width = 1,
-						width = "full",
+                        width = 3,
                         desc = L["Where the anchor is on the icon."],
                         values = {
                             ["TOPLEFT"] = L["TOPLEFT"],
@@ -998,8 +992,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         name = L["Frame Attachment Point"],
                         type = "select",
                         style = "dropdown",
-                        --width = 1,
-						width = "full",
+                        width = 3,
                         desc = L["Icon position relative to its parent frame."],
                         values = {
                             ["TOPLEFT"] = L["TOPLEFT"],
@@ -1018,8 +1011,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         name = L["Grow Direction"],
                         type = "select",
                         style = "dropdown",
-                        --width = 1,
-						width = "full",
+                        width = 3,
                         desc = L["Where the icons will grow from the first icon."],
 						values = {
 							DOWN = L["DOWN"],
@@ -1030,6 +1022,12 @@ function BuffOverlay:AddBarToOptions(bar, barName)
 							VERTICAL = L["VERTICAL"],
 						}
                     },
+					spacer = {
+						order = 3.5,
+						type = "description",
+						name = " ",
+						width = "full",
+					},					
                     iconXOff = {
                         order = 4,
                         name = L["X-Offset"],
@@ -1130,6 +1128,12 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                     --     name = L["Group Size"],
                     --     type = "header",
                     -- },
+					spacer = {
+						order = 9,
+						type = "description",
+						name = " ",
+						width = "full",
+					},					
                     minGroupSize = {
                         order = 10,
                         name = format("%s %s", L["Group Size"], MINIMUM),
@@ -1175,8 +1179,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         name = L["Copy Spells From"],
                         type = "select",
                         order = 0,
-                        --width = 1,
-						width = "full",
+                        width = 2.9,
                         values = function()
                             local values = {}
                             for k, v in pairs(self.db.profile.bars) do
@@ -1211,11 +1214,17 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                             self:RefreshOverlays(true, barName)
                         end,
                     },
+					spacer = {
+						order = 0.5,
+						type = "description",
+						name = " ",
+						width = "full",
+					},					
                     enableAll = {
                         order = 1,
                         name = L["Enable all"],
                         type = "execute",
-                        width = 0.75,
+                        width = 0.97,
                         desc = L["Enable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1242,7 +1251,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 2,
                         name = L["Disable all"],
                         type = "execute",
-                        width = 0.75,
+                        width = 0.97,
                         desc = L["Disable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1270,7 +1279,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                         order = 3,
                         name = L["Aura List"],
                         type = "execute",
-                        width = 0.75,
+                        width = 0.97,
                         desc = L["Shows a list of all enabled auras for this bar in order of priority."],
                         func = function()
                             local dialog = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1369,8 +1378,7 @@ local customSpellInfo = {
         order = 2,
         type = "execute",
         name = DELETE,
-        --width = 1,
-		width = "full",
+        width = 1.5,
         func = function(info)
             local spellId = tonumber(info[#info - 1])
             local spellName, _, icon = GetSpellInfo(spellId)
@@ -1400,6 +1408,7 @@ local customSpellInfo = {
     class = {
         order = 4,
         type = "select",
+		width = 1.5,
         name = CLASS,
         values = function()
             local classes = {}
@@ -1440,15 +1449,16 @@ local customSpellInfo = {
             BuffOverlay:UpdateSpellOptionsTable()
         end,
     },
-    space = {
-        order = 5,
-        name = "\n",
-        type = "description",
-        width = "full",
-    },
+	space1 = {
+		order = 5,
+		name = " ",
+		type = "description",
+		width = 0.05,
+	},
     prio = {
         order = 6,
         type = "input",
+		width = 1.5,
         name = L["Priority (Lower is Higher Prio)"],
         desc = L["The priority of this spell. Lower numbers are higher priority. If two spells have the same priority, it will show alphabetically."],
         validate = function(_, value)
@@ -1498,13 +1508,13 @@ local customSpellInfo = {
         order = 7,
         name = " ",
         type = "description",
-        width = 2,
+        width = "full",
     },
     currentIcon = {
         order = 7.5,
         name = "",
         type = "description",
-        width = 0.33,
+		width = 0.4,
         image = function(info)
             local spellId = info[#info - 1]
             spellId = tonumber(spellId)
@@ -1522,7 +1532,7 @@ local customSpellInfo = {
 		order = 8,
 		name = L["Custom Icon"],
 		type = "input",
-		width = 0.66,
+		width = 1.1,
 		desc = L["The texture path to use for this spell. Example: Interface\\Icons\\Spell_Holy_Renew"],
 
 		get = function(info)
@@ -1570,19 +1580,19 @@ local customSpellInfo = {
 			BuffOverlay:UpdateCustomBuffs()
 		end,
 	},
-    space3 = {
-        order = 9,
-        name = " ",
-        type = "description",
-        width = 2,
-    },
+
+	space3 = {
+		order = 9,
+		name = " ",
+		type = "description",
+		width = 0.05,
+	},
     addChild = {
         order = 10,
         type = "input",
         name = L["Add Child Spell ID"],
         desc = L["Add a child spell ID to this spell. Child IDs will be checked like normal IDs but will use all the same settings (including icon) as its parent. Also, any changes to the parent will apply to all of its children. This is useful for spells that have multiple ids which are convenient to track as a single spell (e.g. different ranks of the same spell)."],
-        --width = 1,
-		width = "full",
+        width = 1.5,
         validate = function(_, value)
             local num = tonumber(value)
 
@@ -1616,14 +1626,13 @@ local customSpellInfo = {
         order = 11,
         name = " ",
         type = "description",
-        width = 2,
+		width = "full",
     },
     removeChild = {
         order = 12,
         type = "select",
         name = L["Remove Custom Child Spell ID"],
-        --width = 1,
-		width = "full",
+        width = 1.5,
         values = function(info)
             local spellId = tonumber(info[#info - 1])
             local values = {}
@@ -1801,8 +1810,7 @@ function BuffOverlay:Options()
                         name = L["Add Bar"],
                         type = "execute",
                         desc = L["Add an additional aura bar with default settings."],
-                        --width = 0.75,
-						width = "full",
+                        width = 0.8,
                         func = function()
                             self:AddBar()
                         end,
@@ -1815,8 +1823,7 @@ function BuffOverlay:Options()
                         func = function()
                             self:Test()
                         end,
-                        --width = 0.75,
-						width = "full",
+                        width = 0.8,
                     },
                 },
             },
