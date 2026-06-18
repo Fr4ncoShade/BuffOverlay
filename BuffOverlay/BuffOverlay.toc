@@ -2,7 +2,7 @@
 ## Title: BuffOverlay
 ## Notes: Overlays chosen auras on top of raid/party frames.
 ## Author: Bianconeri, clicket
-## Version: 1.0.0 WOTLK
+## Version: 1.0.2 WOTLK
 ## X-Website: https://github.com/Fr4ncoShade/BuffOverlay
 ## DefaultState: Enabled
 ## SavedVariables: BuffOverlayDB
