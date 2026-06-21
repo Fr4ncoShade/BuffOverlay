@@ -710,7 +710,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
                 name = L["Set Bar Name"],
                 type = "input",
                 order = 0,
-                width = 1.5,
+                width = 0.85,
                 set = function(info, val)
                     bar[info[#info]] = val
                     self.options.args.bars.args[barName].name = val
@@ -733,7 +733,7 @@ function BuffOverlay:AddBarToOptions(bar, barName)
 spacer = {
 	order = 0.5,
 	type = "description",
-	name = "",
+	name = " ",
 	width = "full",
 },
 ]]
@@ -742,7 +742,7 @@ spacer = {
                 name = L["Delete Bar"],
                 type = "execute",
                 order = 1,
-				width = 0.76,
+				width = 0.85,
                 func = function()
                     local text = format(L["Are you sure you want to delete this bar?%s%s%s"], "\n\n", BuffOverlay:Colorize(bar.name, "main"), "\n\n")
                     deleteBarDelegate.text = text
@@ -755,7 +755,7 @@ spacer = {
                 desc = L["Show test overlays for this bar."],
                 type = "execute",
                 order = 2,
-				width = 0.76,
+				width = 0.85,
                 func = function()
                     if self.test then
                         if self:GetSingleTestAura() ~= nil then
@@ -1224,7 +1224,7 @@ spacer = {
                         order = 1,
                         name = L["Enable all"],
                         type = "execute",
-                        width = 0.97,
+                        width = 0.8,
                         desc = L["Enable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1251,7 +1251,7 @@ spacer = {
                         order = 2,
                         name = L["Disable all"],
                         type = "execute",
-                        width = 0.97,
+                        width = 0.8,
                         desc = L["Disable all spells."],
                         func = function()
                             local dialogIsOpen = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1279,7 +1279,7 @@ spacer = {
                         order = 3,
                         name = L["Aura List"],
                         type = "execute",
-                        width = 0.97,
+                        width = 0.8,
                         desc = L["Shows a list of all enabled auras for this bar in order of priority."],
                         func = function()
                             local dialog = AceConfigDialog.OpenFrames["BuffOverlayDialog"]
@@ -1810,7 +1810,7 @@ function BuffOverlay:Options()
                         name = L["Add Bar"],
                         type = "execute",
                         desc = L["Add an additional aura bar with default settings."],
-                        width = 0.8,
+                        width = 0.9,
                         func = function()
                             self:AddBar()
                         end,
@@ -1823,7 +1823,7 @@ function BuffOverlay:Options()
                         func = function()
                             self:Test()
                         end,
-                        width = 0.8,
+                        width = 0.9,
                     },
                 },
             },
@@ -1871,7 +1871,15 @@ function BuffOverlay:Options()
             }
         },
     }
-
+--===========
+	local LDS = LibStub("LibDualSpec-1.0", true)
+	if LDS then
+		LDS:EnhanceOptions(
+			self.options.plugins.profiles.profiles,
+			self.db
+		)
+	end
+--===========
     self.priorityListDialog = {
         name = "Temp",
         type = "group",
