@@ -931,6 +931,13 @@ end
 --=============================
 function BuffOverlay:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("BuffOverlayDB", defaultSettings, true)
+	
+	-- DualSpec support
+	local LDS = LibStub("LibDualSpec-1.0", true)
+	if LDS then
+		LDS:EnhanceDatabase(self.db, "BuffOverlay")
+	end
+
     LDBIcon:Register("BuffOverlay", broker, self.db.profile.minimap)
 
     self.numGroupMembers = GetNumGroupMembers() --====================== fix it on GetGroupSize()
