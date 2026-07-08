@@ -1113,9 +1113,12 @@ local function HideTestFrames()
 end
 
 local combatDropUpdate = CreateFrame("Frame")
-	local ERR_AFFECTING_COMBAT = L["Test mode cannot be started during combat."]
-	combatDropUpdate:SetScript("OnEvent", function(self)
+local ERR_AFFECTING_COMBAT = L["Test mode cannot be started during combat."]
+combatDropUpdate:SetScript("OnEvent", function(self)
     HideTestFrames()
+    if BuffOverlay then
+        BuffOverlay:RefreshOverlays(true)
+    end
     self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end)
 
